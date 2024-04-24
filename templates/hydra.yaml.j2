@@ -1,0 +1,35 @@
+dsn: postgres://{{ db_info.get('username') }}:{{ db_info.get('password') }}@{{ db_info.get('endpoints') }}/{{ db_info.get('database_name') }}
+log:
+  level: {{ log_level }}
+  format: json
+secrets:
+  cookie:
+  {%- for secret in cookie_secrets %}
+    - {{ secret }}
+  {%- endfor %}
+  system:
+  {%- for secret in system_secrets %}
+    - {{ secret }}
+  {%- endfor %}
+serve:
+  admin:
+    cors:
+      enabled: true
+      allowed_origins:
+        - "*"
+  public:
+    cors:
+      enabled: true
+      allowed_origins:
+        - "*"
+urls:
+  consent: {{ consent_url | d("http://default-url.com/consent", true) }}
+  error: {{ error_url | d("http://default-url.com/oidc_error", true) }}
+  login: {{ login_url | d("http://default-url.com/login", true) }}
+  self:
+    issuer: {{ hydra_public_url }}
+    public: {{ hydra_public_url }}
+
+webfinger:
+  oidc_discovery:
+    supported_scope: {{ supported_scopes }}
